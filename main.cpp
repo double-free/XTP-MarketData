@@ -13,7 +13,17 @@ int main(int argc, const char* argv[]) {
   }
 
   // client_id 为 0 时创建的是空指针
-  QuoteApi *api = QuoteApi::CreateQuoteApi(22, "Data/");
+  // 为 SH 和 SZ 安排不同的 client_id，允许同时开启
+  uint8_t client_id = 0;
+  if (strcmp(argv[1], "SH") == 0) {
+    client_id = 22;
+  } else if (strcmp(argv[1], "SZ") == 0) {
+    client_id = 23;
+  } else {
+    printf("Unknown Exchange: %s\n", argv[1]);
+    exit(-1);
+  }
+  QuoteApi *api = QuoteApi::CreateQuoteApi(client_id, "Data/");
   XtpMdSpi spi(api, "Data/MarketData/");
   api->RegisterSpi(&spi);
   const char* ip = "120.27.164.138";
@@ -43,7 +53,7 @@ int main(int argc, const char* argv[]) {
       api->QueryAllTickers(XTP_EXCHANGE_SZ);
     } else {
       printf("Unknown Exchange: %s\n", argv[1]);
-      exit(0);
+      exit(-1);
     }
   } else {
     printf("Login failed...\n");
