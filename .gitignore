@@ -37,3 +37,4 @@ Data/log/
 Data/MarketData/*
 !Data/MarketData/verifyData.cpp
 !Data/MarketData/Makefile
+*.log
