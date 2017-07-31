@@ -50,7 +50,7 @@ void XtpMdSpi::OnUnSubMarketData(XTPST* ticker, XTPRI* error_info, bool is_last)
 
 void XtpMdSpi::OnMarketData(XTPMD* market_data) {
   // size of XTPMD: 736 bytes
-  // printf("ticker(exchange_id: %d): %s at address %p\n", market_data->exchange_id, market_data->ticker, market_data);
+  // printf("Put Data in thread: %x\n", std::this_thread::get_id());
   common::tick_header h;
   h.init();
   // printf("ticker header size = %d\n", sizeof(h)); // 24

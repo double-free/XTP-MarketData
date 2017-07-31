@@ -6,7 +6,7 @@ LIBPATH=$$HOME/Lib/XTP
 LIB=-lxtpquoteapiD -lpthread
 CC=g++ -std=c++14
 # display all warnings
-CC_FLAG=-Wall -g
+CC_FLAG=-Wall -g -O2
 
 PRG=MarketMachine
 OBJ=main.o xtpmdspi.o ringbuffer.o

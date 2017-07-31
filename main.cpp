@@ -16,9 +16,9 @@ int main(int argc, const char* argv[]) {
   // 为 SH 和 SZ 安排不同的 client_id，允许同时开启
   uint8_t client_id = 0;
   if (strcmp(argv[1], "SH") == 0) {
-    client_id = 22;
+    client_id = 12;
   } else if (strcmp(argv[1], "SZ") == 0) {
-    client_id = 23;
+    client_id = 13;
   } else {
     printf("Unknown Exchange: %s\n", argv[1]);
     exit(-1);
@@ -58,7 +58,7 @@ int main(int argc, const char* argv[]) {
   } else {
     printf("Login failed...\n");
   }
-  printf("Main thread: %lu\n", std::this_thread::get_id());
+  printf("Main thread: %08x\n", std::this_thread::get_id());
   std::this_thread::sleep_for(std::chrono::hours(24));
   return 0;
 }

@@ -52,5 +52,5 @@ private:
     return ret;
   }
   // void writeDataToFile(const std::string& path);
-  void writeDataToFile(const std::string& path, size_t dataLen);
+  void writeDataToFile(const std::string& path, size_t out, size_t dataLen);
 };

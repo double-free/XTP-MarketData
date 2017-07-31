@@ -99,8 +99,9 @@ void RingBuffer::writeDataToFile(const std::string& path) {
 
 /********************************************************
  * 实现思路2：一个线程 putData，超过一定量后修改 out，再异步写入
- * 优点：修改 in out 都在一个线程，不需要任何同步
- * 缺点：不能确保写入成功与否，写入失败会出现问题
+ * 优点： 修改 in out 都在一个线程，不需要任何同步
+ * 缺点： 不能确保写入成功与否，写入失败会出现问题
+ * 缺点: 如果出现第一次写入尚未结束，第二次写入又开始的情况会发生什么?
  ********************************************************/
 void RingBuffer::setSavePath(const std::string& path) {
   outFilePath_ = path;
@@ -118,24 +119,28 @@ void RingBuffer::putData(char* data, size_t datalen) {
   if (currentDataLen > (size_>>1) && outFilePath_.empty() == false) {
     // std::thread t1(writeDataToFile, std::ref(outFilePath_), currentDataLen);
     // fixed for member function
-    auto f = [this](const std::string& path_, size_t len_) {
-      this->writeDataToFile(path_, len_);
+    /*
+    auto f = [this](const std::string& path, size_t out, size_t len) {
+      this->writeDataToFile(path, out, len);
     };
-    std::thread t1(f, std::ref(outFilePath_), currentDataLen);
+    */
+    std::thread t1(&RingBuffer::writeDataToFile, this, std::ref(outFilePath_), out_, currentDataLen);
     t1.detach();
-    in_ = out_;
+    out_ = in_;
   }
 }
 
-void RingBuffer::writeDataToFile(const std::string& path, size_t size_to_write) {
+void RingBuffer::writeDataToFile(const std::string& path, size_t out, size_t size_to_write) {
   // 整个函数中并没有用到 in，所以无论另一个线程如何 putData 都不会影响这个函数的运作
+  printf("Write at thread: %08x, from %lu to %lu(not precisely), length = %lu\n", std::this_thread::get_id(), out, in_, size_to_write);
   std::ofstream fs(path, std::ios::out | std::ios::app);
   if (fs.is_open() == false || size_to_write == 0) {
     return;
   }
-  size_t len = MIN(size_to_write, size_ - (out_ & (size_ - 1)));
-  fs.write(buffer_ + (out_ & (size_ -1)), len);
+  size_t len = MIN(size_to_write, size_ - (out & (size_ - 1)));
+  fs.write(buffer_ + (out & (size_ -1)), len);
   fs.write(buffer_, size_to_write - len);
   fs.close();
+  printf("\tWrite finished...\n");
   // printf("GET: \n\tpos out increase to %lu, in = %lu, data length = %lu(of %lu)\n", out_, in_, dataLength(), size_);
 }
