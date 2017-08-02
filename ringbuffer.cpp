@@ -8,6 +8,8 @@ RingBuffer::RingBuffer() {
   buffer_ = nullptr;
   in_ = 0;
   out_ = 0;
+
+  threadPool_ = new ThreadPool(1);
 }
 
 RingBuffer::RingBuffer(size_t size) {
@@ -19,12 +21,17 @@ RingBuffer::RingBuffer(size_t size) {
   in_ = 0;
   out_ = 0;
   printf("No lock ring buffer...\n" );
+
+  threadPool_ = new ThreadPool(1);
 }
 
 RingBuffer::~RingBuffer() {
   if (buffer_) {
     delete[] buffer_;
     buffer_ = nullptr;
+  }
+  if (threadPool_) {
+    delete threadPool_;
   }
 }
 
@@ -117,15 +124,16 @@ void RingBuffer::putData(char* data, size_t datalen) {
   // printf("PUT: \n\tpos in increase to %lu, out = %lu, data length = %lu(of %lu)\n", in_, out_, dataLength(), size_);
   size_t currentDataLen = dataLength();
   if (currentDataLen > (size_>>1) && outFilePath_.empty() == false) {
-    // std::thread t1(writeDataToFile, std::ref(outFilePath_), currentDataLen);
-    // fixed for member function
     /*
     auto f = [this](const std::string& path, size_t out, size_t len) {
       this->writeDataToFile(path, out, len);
     };
     */
+    /* 这样会在每次写入时有新建线程的额外开销
     std::thread t1(&RingBuffer::writeDataToFile, this, std::ref(outFilePath_), out_, currentDataLen);
     t1.detach();
+    */
+    threadPool_->doJob(std::bind(&RingBuffer::writeDataToFile, this, outFilePath_, out_, currentDataLen));
     out_ = in_;
   }
 }

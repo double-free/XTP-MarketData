@@ -4,6 +4,7 @@
 #pragma once
 #include <cstddef>
 #include <string>
+#include "ThreadPool/thread_pool.h"
 
 #define MIN(A,B) ((A)<(B)?(A):(B))
 
@@ -40,6 +41,9 @@ private:
 
   // for XtpMdSpi
   std::string outFilePath_;
+
+  // a thread pool for writing file (1 thread is enough)
+  ThreadPool *threadPool_;
 
   inline bool is_power_of_2_(size_t x) {
     return x != 0 && (x & (x-1)) == 0;

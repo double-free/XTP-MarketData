@@ -9,7 +9,7 @@ CC=g++ -std=c++14
 CC_FLAG=-Wall -g -O2
 
 PRG=MarketMachine
-OBJ=main.o xtpmdspi.o ringbuffer.o
+OBJ=main.o xtpmdspi.o ringbuffer.o ThreadPool/thread_pool.o
 
 $(PRG):$(OBJ)
 	$(CC) $(INC) -o $@ $(OBJ) -L$(LIBPATH) $(LIB)
