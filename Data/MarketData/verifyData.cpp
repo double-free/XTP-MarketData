@@ -39,7 +39,8 @@ void printBinaryFile(const std::string &binary_path) {
     std::cout << '\t' << "交易所:" << dataArr[i].market_data.exchange_id << "\n"
               << '\t' << "合约代码:" << dataArr[i].market_data.ticker << "\n"
               << '\t' << "最新价:" << dataArr[i].market_data.last_price << "\n"
-              << '\t' << "昨收盘:" << dataArr[i].market_data.pre_close_price << "\n"
+              << '\t' << "昨收盘:" << dataArr[i].market_data.pre_close_price
+              << "\n"
               << '\t' << "今开盘:" << dataArr[i].market_data.open_price << "\n"
               << '\t' << "最高价:" << dataArr[i].market_data.high_price << "\n"
               << '\t' << "最低价:" << dataArr[i].market_data.low_price << "\n"

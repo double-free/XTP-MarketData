@@ -1,8 +1,8 @@
 #pragma once
 #include "XTP_API/xtp_quote_api.h"
+#include "ringbuffer.h"
 #include <set>
 #include <string>
-#include "ringbuffer.h"
 
 using namespace XTP::API;
 class XtpMdSpi : public QuoteSpi {
@@ -35,7 +35,7 @@ public:
   } XTPRI;
   */
 
-  XtpMdSpi(QuoteApi *api, const std::string& dataDir);
+  XtpMdSpi(QuoteApi *api, const std::string &dataDir);
   ~XtpMdSpi();
   // 与行情后台通信断开时调用
   virtual void OnDisconnected(int reason);
@@ -51,7 +51,8 @@ public:
   virtual void OnMarketData(XTPMD *market_data);
 
   // 查询所有可交易合约结果
-  virtual void OnQueryAllTickers(XTPQSI* tiker_info, XTPRI* error_info, bool is_last);
+  virtual void OnQueryAllTickers(XTPQSI *tiker_info, XTPRI *error_info,
+                                 bool is_last);
 
 private:
   QuoteApi *api_;

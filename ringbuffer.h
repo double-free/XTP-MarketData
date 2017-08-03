@@ -2,11 +2,11 @@
  * This ring buffer is designed only for 1 producer and 1 consumer *
  *******************************************************************/
 #pragma once
+#include "ThreadPool/thread_pool.h"
 #include <cstddef>
 #include <string>
-#include "ThreadPool/thread_pool.h"
 
-#define MIN(A,B) ((A)<(B)?(A):(B))
+#define MIN(A, B) ((A) < (B) ? (A) : (B))
 
 class RingBuffer {
   // 1 个生产者，1 个消费者时不需要锁
@@ -29,10 +29,11 @@ public:
 
   void setSize(size_t size);
 
-  void putData(char* data, size_t datalen);
-  void getData(char* buf, size_t datalen);
+  void putData(char *data, size_t datalen);
+  void getData(char *buf, size_t datalen);
   // void startWrite(const std::string& path, size_t time_interval = 1);
-  void setSavePath(const std::string& path);
+  void setSavePath(const std::string &path);
+
 private:
   char *buffer_;
   size_t size_; // 缓冲区大小
@@ -45,9 +46,7 @@ private:
   // a thread pool for writing file (1 thread is enough)
   ThreadPool *threadPool_;
 
-  inline bool is_power_of_2_(size_t x) {
-    return x != 0 && (x & (x-1)) == 0;
-  }
+  inline bool is_power_of_2_(size_t x) { return x != 0 && (x & (x - 1)) == 0; }
   inline size_t roundup_power_of_2(size_t x) {
     size_t ret = 1;
     while (ret < x) {
@@ -56,5 +55,5 @@ private:
     return ret;
   }
   // void writeDataToFile(const std::string& path);
-  void writeDataToFile(const std::string& path, size_t out, size_t dataLen);
+  void writeDataToFile(const std::string &path, size_t out, size_t dataLen);
 };

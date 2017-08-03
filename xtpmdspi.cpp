@@ -6,49 +6,49 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-XtpMdSpi::XtpMdSpi(QuoteApi* api, const std::string& dataDir): api_(api) {
+XtpMdSpi::XtpMdSpi(QuoteApi *api, const std::string &dataDir) : api_(api) {
   if (access(dataDir.c_str(), F_OK && W_OK) < 0) {
     mkdir(dataDir.c_str(), 0751);
   }
   market_data_dir_ = std::move(dataDir);
-  const size_t BUFFER_SIZE = 1<<22;
+  const size_t BUFFER_SIZE = 1 << 22;
   ring_buffer_.setSize(BUFFER_SIZE);
   printf("QuoteSpi created...\n");
 }
 
-XtpMdSpi::~XtpMdSpi() {
-  printf("QuoteSpi deleted...\n");
+XtpMdSpi::~XtpMdSpi() { printf("QuoteSpi deleted...\n"); }
+
+void XtpMdSpi::OnDisconnected(int reason) { printf("Disconnected...\n"); }
+
+void XtpMdSpi::OnError(XTPRI *error_info) {
+  printf("Server Error: %s (errno: %d)\n", error_info->error_msg,
+         error_info->error_id);
 }
 
-void XtpMdSpi::OnDisconnected(int reason) {
-  printf("Disconnected...\n");
-}
-
-void XtpMdSpi::OnError(XTPRI* error_info) {
-  printf("Server Error: %s (errno: %d)\n", error_info->error_msg, error_info->error_id);
-}
-
-void XtpMdSpi::OnSubMarketData(XTPST* ticker, XTPRI* error_info, bool is_last) {
+void XtpMdSpi::OnSubMarketData(XTPST *ticker, XTPRI *error_info, bool is_last) {
   if (error_info == nullptr || error_info->error_id == 0) {
     if (is_last) {
       printf("Subscribe succeed\n");
     }
   } else {
-    printf("Subscribe Error: %s (errno: %d)\n", error_info->error_msg, error_info->error_id);
+    printf("Subscribe Error: %s (errno: %d)\n", error_info->error_msg,
+           error_info->error_id);
   }
 }
 
-void XtpMdSpi::OnUnSubMarketData(XTPST* ticker, XTPRI* error_info, bool is_last) {
+void XtpMdSpi::OnUnSubMarketData(XTPST *ticker, XTPRI *error_info,
+                                 bool is_last) {
   if (error_info == nullptr || error_info->error_id == 0) {
     if (is_last) {
       printf("Unsubscribe succeed\n");
     }
   } else {
-    printf("Unsubscribe Error: %s (errno: %d)\n", error_info->error_msg, error_info->error_id);
+    printf("Unsubscribe Error: %s (errno: %d)\n", error_info->error_msg,
+           error_info->error_id);
   }
 }
 
-void XtpMdSpi::OnMarketData(XTPMD* market_data) {
+void XtpMdSpi::OnMarketData(XTPMD *market_data) {
   // size of XTPMD: 736 bytes
   // printf("Put Data in thread: %x\n", std::this_thread::get_id());
   common::tick_header h;
@@ -58,7 +58,8 @@ void XtpMdSpi::OnMarketData(XTPMD* market_data) {
   ring_buffer_.putData((char *)market_data, 736);
 }
 
-void XtpMdSpi::OnQueryAllTickers(XTPQSI* ticker_info, XTPRI* error_info, bool is_last) {
+void XtpMdSpi::OnQueryAllTickers(XTPQSI *ticker_info, XTPRI *error_info,
+                                 bool is_last) {
   /*
   ///股票行情静态信息
   typedef struct XTPQuoteStaticInfo {
@@ -89,12 +90,13 @@ void XtpMdSpi::OnQueryAllTickers(XTPQSI* ticker_info, XTPRI* error_info, bool is
     subscriptions_.insert(std::move(ticker_str));
     if (is_last) {
       int count;
-      char** tickers;
+      char **tickers;
       count = subscriptions_.size();
-      tickers = new char* [count];
+      tickers = new char *[count];
       int idx = 0;
-      for (auto& str : subscriptions_) {
-        tickers[idx++] = (char *)str.c_str(); // c_str() 返回底层 char 数组，不需要 copy
+      for (auto &str : subscriptions_) {
+        tickers[idx++] =
+            (char *)str.c_str(); // c_str() 返回底层 char 数组，不需要 copy
       }
       XTP_EXCHANGE_TYPE exchange_id = ticker_info->exchange_id;
       std::string filename;
@@ -112,6 +114,7 @@ void XtpMdSpi::OnQueryAllTickers(XTPQSI* ticker_info, XTPRI* error_info, bool is
       delete[] tickers;
     }
   } else {
-    printf("Query Error: %s (errno: %d)\n", error_info->error_msg, error_info->error_id);
+    printf("Query Error: %s (errno: %d)\n", error_info->error_msg,
+           error_info->error_id);
   }
 }
