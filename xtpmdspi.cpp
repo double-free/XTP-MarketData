@@ -53,9 +53,10 @@ void XtpMdSpi::OnMarketData(XTPMD *market_data) {
   // printf("Put Data in thread: %x\n", std::this_thread::get_id());
   common::tick_header h;
   h.init();
+  h.body_size = 736;
   // printf("ticker header size = %d\n", sizeof(h)); // 24
   ring_buffer_.putData((char *)&h, 24);
-  ring_buffer_.putData((char *)market_data, 736);
+  ring_buffer_.putData((char *)market_data, h.body_size);
 }
 
 void XtpMdSpi::OnQueryAllTickers(XTPQSI *ticker_info, XTPRI *error_info,

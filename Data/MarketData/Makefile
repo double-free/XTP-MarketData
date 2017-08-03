@@ -22,4 +22,5 @@ $(PRG):$(OBJ)
 clean:
 	@echo "Removing linked and compiled files......"
 	rm -f $(OBJ) $(PRG)
-	rm SH SZ
+	rm -f SH SZ
+	rm *.csv

@@ -37,4 +37,5 @@ Data/log/
 Data/MarketData/*
 !Data/MarketData/verifyData.cpp
 !Data/MarketData/Makefile
+!Data/MarketData/data2csv.py
 *.log

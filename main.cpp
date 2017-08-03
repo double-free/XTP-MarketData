@@ -16,9 +16,9 @@ int main(int argc, const char* argv[]) {
   // 为 SH 和 SZ 安排不同的 client_id，允许同时开启
   uint8_t client_id = 0;
   if (strcmp(argv[1], "SH") == 0) {
-    client_id = 12;
+    client_id = 22;
   } else if (strcmp(argv[1], "SZ") == 0) {
-    client_id = 13;
+    client_id = 23;
   } else {
     printf("Unknown Exchange: %s\n", argv[1]);
     exit(-1);
