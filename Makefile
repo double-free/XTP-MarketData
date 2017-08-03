@@ -22,3 +22,5 @@ $(PRG):$(OBJ)
 clean:
 	@echo "Removing linked and compiled files......"
 	rm -f $(OBJ) $(PRG)
+	rm -r Data/log
+	rm *.log
