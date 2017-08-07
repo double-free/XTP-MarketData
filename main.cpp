@@ -28,8 +28,8 @@ int main(int argc, const char* argv[]) {
   api->RegisterSpi(&spi);
   const char* ip = "120.27.164.138";
   int port = 6002;
-  const char* user = "15030398";
-  const char* password = "I6k8ysSR";
+  const char* user = "username";
+  const char* password = "password";
 
   /*
   enum XTP_PROTOCOL_TYPE
